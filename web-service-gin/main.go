@@ -3,7 +3,9 @@ package main
 import (
 	dataAccess "example/data-access"
 	"fmt"
-	"log"
+	"strconv"
+
+	// "log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -64,38 +66,51 @@ func getAlbums(c *gin.Context) {
 
 // postAlbums adds an album from JSON received in the request body.
 func postAlbums(c *gin.Context) {
-	var newAlbum album
+	title := c.Param("title")
+	artist := c.Param("artist")
+	price := c.Param("price")
 
-	// Call BindJSON to bind the received JSON to
-	// newAlbum.
-	if err := c.BindJSON(&newAlbum); err != nil {
-		return
+	int64Price, priceErr := strconv.ParseFloat(price, 10)
+	if priceErr != nil {
+		int64Price = 0
 	}
 
-	// Add the new album to the slice.
-	albums = append(albums, newAlbum)
-	c.IndentedJSON(http.StatusCreated, newAlbum)
+	var newAlbum album
+	newAlbum.Title = title
+	newAlbum.Artist = artist
+	newAlbum.Price = int64Price
+	
+	var album dataAccess.Album
+	album.Title = newAlbum.Title
+	album.Artist = newAlbum.Artist
+	album.Price = newAlbum.Price
+
+	albID, err := dataAccess.AddAlbum(album)
+	if err != nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
+
+		return
+	}
+	fmt.Printf("ID of added album: %v\n", albID)
+
+	c.IndentedJSON(http.StatusCreated, album)
 }
 
 // getAlbumByID locates the album whose ID value matches the id
 // parameter sent by the client, then returns that album as a response.
 func getAlbumByID(c *gin.Context) {
 	id := c.Param("id")
+	int64num, numerr := strconv.ParseInt(id, 10, 64)
+	if numerr != nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
+		return
+	}
 
-	// Hard-code ID 2 here to test the query.
-	alb, err := dataAccess.AlbumByID(24)
+	alb, err := dataAccess.AlbumByID(int64num)
 	if err != nil {
-		log.Fatal(err)
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
+		return
 	}
 	fmt.Printf("Album found: %v\n", alb)
-
-	// Loop through the list of albums, looking for
-	// an album whose ID value matches the parameter.
-	for _, a := range albums {
-		if a.ID == id {
-			c.IndentedJSON(http.StatusOK, a)
-			return
-		}
-	}
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
+	c.IndentedJSON(http.StatusOK, alb)
 }

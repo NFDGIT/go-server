@@ -16,7 +16,7 @@ type Album struct {
 	ID     int64
 	Title  string
 	Artist string
-	Price  float32
+	Price  float64
 }
 
 func Connect() {
