@@ -1,16 +1,18 @@
-package demo
+package hello
 
 import (
-	"log"
 	"fmt"
+	"log"
+
 	"example.com/greetings"
 )
 
 func Demo() {
 
-	message,err := greetings.Hello("peng")
+	message, err := greetings.Hello("peng")
 	if err != nil {
 		log.Fatal(err)
 	}
+    
 	fmt.Println(message)
 }
