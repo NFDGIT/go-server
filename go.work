@@ -5,4 +5,5 @@ use (
 	./greetings
 	./hello
 	./web-service-gin
+	./playground
 )
