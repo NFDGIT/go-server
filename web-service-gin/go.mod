@@ -2,11 +2,7 @@ module example/web-service-gin
 
 go 1.20
 
-require (
-	example.com/greetings v0.0.0-00010101000000-000000000000
-	example/hello v0.0.0-00010101000000-000000000000
-	github.com/gin-gonic/gin v1.9.0
-)
+require github.com/gin-gonic/gin v1.9.0
 
 replace example.com/greetings => ../greetings
 

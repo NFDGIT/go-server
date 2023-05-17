@@ -5,22 +5,11 @@ import (
 	"example.com/greetings"
 
 )
-
-// 冒泡算法
-func bubbleSort(arr []int) {
-	for i := 0; i < len(arr)-1; i++ {
-		for j := 0; j < len(arr)-1-i; j++ {
-			if arr[j] > arr[j+1] {
-				arr[j], arr[j+1] = arr[j+1], arr[j]
-			}
-		}
-	}
-}
-		
+	
 
 
 func Playgroud() {
-  
+
 	arr := []int{7, 2, 8, -9, 4, 0}
 	bubbleSort(arr)
 	fmt.Printf("arr:: %v\n", arr)
@@ -50,6 +39,16 @@ func Playgroud() {
 	fmt.Printf("END Y\n")
 	fmt.Println(x, y, x+y)
 }
+func assignDemo() {	
+
+	num := 1
+	var num2 int = 1
+	var num3 int
+	num3 = 1
+	fmt.Printf("num:%v\n%v\n%v\n", num,num2,num3)
+	
+}
+
 func sum(s []int, c chan int) {
 	sum := 0
 	for _, v := range s {
@@ -61,3 +60,14 @@ func sum(s []int, c chan int) {
 	// fmt.Printf("after write:: %v\n", s)
 }
 
+// 冒泡算法
+func bubbleSort(arr []int) {
+	for i := 0; i < len(arr)-1; i++ {
+		for j := 0; j < len(arr)-1-i; j++ {
+			if arr[j] > arr[j+1] {
+				arr[j], arr[j+1] = arr[j+1], arr[j]
+			}
+		}
+	}
+}
+	
