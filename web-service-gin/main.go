@@ -4,7 +4,7 @@ import (
 	dataAccess "example/data-access"
 	"fmt"
 	"strconv"
-
+    phchat "phchat"
 	// "log"
 	"net/http"
 
@@ -30,14 +30,17 @@ var albums = []album{
 
 func main() {
 
-	dataAccess.Connect()
+	phchat.StartServer()
+	fmt.Print
 
-	router := gin.Default()
-	router.GET("/albums", getAlbums)
-	router.GET("/albums/:id", getAlbumByID)
-	router.POST("/albums", postAlbums)
+// phchat.StartClient()
+	// dataAccess.Connect()
 
-	router.Run(":8080")
+	// router := gin.Default()
+	// router.GET("/albums/:id", getAlbumByID)
+	// router.POST("/albums", postAlbums)
+
+	// router.Run(":8080")
 }
 
 // getAlbums responds with the list of all albums as JSON.

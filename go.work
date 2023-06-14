@@ -6,4 +6,5 @@ use (
 	./hello
 	./web-service-gin
 	./playground
+	./phchat
 )
