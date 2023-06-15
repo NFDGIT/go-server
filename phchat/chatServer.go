@@ -1,11 +1,14 @@
 package phchat
 import (
     "bufio"
-    "fmt"
     "log"
     "net"
 )
- type client chan<- string // Define a channel that sends data outward
+type Tuple struct {
+  name string 
+	cn   chan string
+}
+ type client Tuple
 var (
     entering = make(chan client)
     leaving  = make(chan client)
@@ -28,41 +31,47 @@ var (
     }
 }
  func broadcaster() {
-    clients := make(map[client]bool) // Store the login status of each client
+	clients := make(map[client]bool)
     for {
         select {
         case msg := <-messages:
             for cli := range clients {
-                cli <- msg
+                cli.cn <- msg
             }
+			log.Println(msg)
         case cli := <-entering:
+			log.Println("connected "+cli.name)
             clients[cli] = true
         case cli := <-leaving:
+			log.Println("disconnected" + cli.name)
             delete(clients, cli)
-            close(cli)
+			close(cli.cn)
         }
     }
 }
  func handleConn(conn net.Conn) {
-    ch := make(chan string)
-    go clientWriter(conn, ch)
+    cli := client{}
+	cli.cn = make(chan string)
+    go clientWriter(conn, cli.cn)
     who := conn.RemoteAddr().String()
-    ch <- "You are " + who + "\n"
-    entering <- ch
+    cli.name = "You are " + who + "\n"
+    cli.cn <- "You are " + who + "\n"
+	entering <- cli
     messages <- who + " has arrived"
-    fmt.Println(who + " has connected") // Print the user's connection to the console
     input := bufio.NewScanner(conn)
     for input.Scan() {
         messages <- who + ":" + input.Text() + "\n"
-        fmt.Println(who + ":" + input.Text()) // Print the message to the console
     }
-    leaving <- ch
+	leaving <- cli
     messages <- who + " has left"
-    fmt.Println(who + " has disconnected") // Print the user's disconnection to the console
     conn.Close()
 }
- func clientWriter(conn net.Conn, ch <-chan string) {
+ func clientWriter(conn net.Conn, ch chan string) {
     for msg := range ch {
-        fmt.Fprintln(conn, msg)
+		_, err := conn.Write([]byte(msg))
+		if err != nil {
+			log.Println(err)
+			return
+		}
     }
 }

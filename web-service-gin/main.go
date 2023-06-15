@@ -31,8 +31,6 @@ var albums = []album{
 func main() {
 
 	phchat.StartServer()
-	fmt.Print
-
 // phchat.StartClient()
 	// dataAccess.Connect()
 
