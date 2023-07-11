@@ -5,10 +5,59 @@ import (
 	"fmt"
 	"log"
 
-	// "os"
-
 	"github.com/go-sql-driver/mysql"
+	gomysql "gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
+
+var gdb *gorm.DB
+
+type User struct {
+	ID    uint   `gorm:"primarykey"`
+	Name  string `gorm:"column:name"`
+	Email string `gorm:"column:email"`
+}
+
+func ConnectViaGORM() {
+	dsn := "root:feng6368@tcp(127.0.0.1:3306)/recordings?charset=utf8mb4&parseTime=True&loc=Local"
+	var err error
+	gdb, err = gorm.Open(gomysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatal(err)
+		// 错误处理
+	}
+	fmt.Println("Connected!")
+}
+
+// 创建记录
+func CreateRecord(record interface{}) error {
+	result := gdb.Create(record)
+	return result.Error
+}
+
+// 查询单个记录
+func GetRecord(id uint, record interface{}) error {
+	result := gdb.First(record, id)
+	return result.Error
+}
+
+// 查询全部记录
+func GetAllRecord(records []interface{}) error {
+	result := gdb.Find(&records)
+	return result.Error
+}
+
+// 更新记录
+func UpdateRecord(record interface{}, field string, value interface{}) error {
+	result := gdb.Model(record).Update(field, value)
+	return result.Error
+}
+
+// 删除记录
+func DeleteRecord(record interface{}) error {
+	result := gdb.Delete(record)
+	return result.Error
+}
 
 var db *sql.DB
 
@@ -20,6 +69,7 @@ type Album struct {
 }
 
 func Connect() {
+
 	// Capture connection properties.
 	cfg := mysql.Config{
 		User:   "root",
@@ -59,7 +109,7 @@ func Connect() {
 	// }
 	// fmt.Printf("Albums found: %v\n", albums)
 
-	// Hard-code ID 2 here to test the query.
+	// // Hard-code ID 2 here to test the query.
 	// alb, err := albumByID(25)
 	// if err != nil {
 	// 	log.Fatal(err)

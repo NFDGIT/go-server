@@ -1,0 +1,18 @@
+{
+    "go.useLanguageServer": true,
+    "go.goroot": "D:/Programs/Go",
+    "go.lintOnSave": "package",
+    "go.formatTool": "goimports",
+    // "go.formatOnSave": true,
+    "go.testOnSave": true,
+    "go.coverOnSave": false,
+    // "go.gotoSymbol.includeSymbolsWithoutGoFiles": true,
+    "go.addTags": {
+        //   "json": "json",
+        //   "yaml": "yaml"
+    },
+    "go.buildFlags": [],
+    "go.testFlags": [
+        "-v"
+    ]
+}
